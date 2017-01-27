@@ -29,6 +29,8 @@
 #include "stm32f103xb.h"
 #elif defined(CPU_MODEL_STM32F103RE)
 #include "stm32f103xe.h"
+#elif defined(CPU_MODEL_STM32F105RC) || defined(CPU_MODEL_STM32F105VC)
+#include "stm32f105xc.h"
 #endif
 
 #ifdef __cplusplus
