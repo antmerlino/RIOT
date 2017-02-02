@@ -22,6 +22,8 @@
 #include <stdint.h>
 #include "vectors_cortexm.h"
 
+#include "cpu_conf.h"
+
 /* get the start of the ISR stack as defined in the linkerscript */
 extern uint32_t _estack;
 
@@ -90,6 +92,13 @@ WEAK_DEFAULT void isr_dma2_ch1(void);
 WEAK_DEFAULT void isr_dma2_ch2(void);
 WEAK_DEFAULT void isr_dma2_ch3(void);
 WEAK_DEFAULT void isr_dma2_ch4_5(void);
+WEAK_DEFAULT void isr_dma2_ch4(void);
+WEAK_DEFAULT void isr_dma2_ch5(void);
+WEAK_DEFAULT void isr_can2_tx(void);
+WEAK_DEFAULT void isr_can2_rx0(void);
+WEAK_DEFAULT void isr_can2_rx1(void);
+WEAK_DEFAULT void isr_can2_sce(void);
+WEAK_DEFAULT void isr_otg_fs(void);
 
 /* interrupt vector table */
 ISR_VECTORS const void *interrupt_vector[] = {
@@ -157,6 +166,7 @@ ISR_VECTORS const void *interrupt_vector[] = {
     (void*) isr_exti,
     (void*) isr_rtc_alarm,
     (void*) isr_usb_wakeup,
+#if defined(STM32F103xE)
     (void*) isr_tim8_brk,
     (void*) isr_tim8_up,
     (void*) isr_tim8_trg_com,
@@ -174,4 +184,32 @@ ISR_VECTORS const void *interrupt_vector[] = {
     (void*) isr_dma2_ch2,
     (void*) isr_dma2_ch3,
     (void*) isr_dma2_ch4_5,
+#elif defined(STM32F105xC)
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) isr_tim5,
+    (void*) isr_spi3,
+    (void*) isr_uart4,
+    (void*) isr_uart5,
+    (void*) isr_tim6,
+    (void*) isr_tim7,
+    (void*) isr_dma2_ch1,
+    (void*) isr_dma2_ch2,
+    (void*) isr_dma2_ch3,
+    (void*) isr_dma2_ch4,
+    (void*) isr_dma2_ch5,
+    (void*) (0UL),                  /* Reserved */
+    (void*) (0UL),                  /* Reserved */
+    (void*) isr_can2_tx,
+    (void*) isr_can2_rx0,
+    (void*) isr_can2_rx1,
+    (void*) isr_can2_sce,
+    (void*) isr_otg_fs
+#endif
 };
+

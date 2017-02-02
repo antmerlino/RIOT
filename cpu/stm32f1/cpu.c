@@ -117,15 +117,34 @@ static void clk_init(void)
     /* Set HSION bit */
     RCC->CR |= (uint32_t)0x00000001;
     /* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits */
+#if !defined(STM32F105xC) && !defined(STM32F107xC)
+    RCC->CFGR &= (uint32_t)0xF8FF0000;
+#else
     RCC->CFGR &= (uint32_t)0xF0FF0000;
+#endif /* STM32F105xC */  
     /* Reset HSEON, CSSON and PLLON bits */
     RCC->CR &= (uint32_t)0xFEF6FFFF;
     /* Reset HSEBYP bit */
     RCC->CR &= (uint32_t)0xFFFBFFFF;
     /* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE/OTGFSPRE bits */
     RCC->CFGR &= (uint32_t)0xFF80FFFF;
+
+#if defined(STM32F105xC) || defined(STM32F107xC)
+    /* Reset PLL2ON and PLL3ON bits */
+    RCC->CR &= (uint32_t)0xEBFFFFFF;
     /* Disable all interrupts and clear pending bits  */
-    RCC->CIR = (uint32_t)0x009F0000;
+    RCC->CIR = 0x00FF0000;
+    /* Reset CFGR2 register */
+    RCC->CFGR2 = 0x00000000;
+#elif defined(STM32F100xB) || defined(STM32F100xE)
+    /* Disable all interrupts and clear pending bits  */
+    RCC->CIR = 0x009F0000;
+    /* Reset CFGR2 register */
+    RCC->CFGR2 = 0x00000000;      
+#else
+    /* Disable all interrupts and clear pending bits  */
+    RCC->CIR = 0x009F0000;
+#endif /* STM32F105xC */
 
     /* SYSCLK, HCLK, PCLK2 and PCLK1 configuration */
     /* Enable high speed clock source */
